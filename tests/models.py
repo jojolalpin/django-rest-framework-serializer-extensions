@@ -15,7 +15,7 @@ class Owner(models.Model):
 
 class OwnerPreferences(models.Model):
     favorite_manufacturer = models.ForeignKey(
-        'tests.Manufacturer', related_name='fans', null=True
+        'tests.Manufacturer', related_name='fans', null=True, on_delete=models.PROTECT
     )
     price_limit_dollars = models.IntegerField(null=True)
 
