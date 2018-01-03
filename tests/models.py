@@ -8,10 +8,26 @@ class Owner(models.Model):
         'tests.Organization', related_name='staff',
         on_delete=models.CASCADE
     )
+    preferences = models.OneToOneField(
+        'tests.OwnerPreferences', on_delete=models.PROTECT
+    )
+
+
+class OwnerPreferences(models.Model):
+    favorite_manufacturer = models.ForeignKey(
+        'tests.Manufacturer', related_name='fans', null=True
+    )
+    price_limit_dollars = models.IntegerField(null=True)
 
 
 class Organization(models.Model):
     name = models.CharField(unique=True, max_length=32)
+
+    def cars(self):
+        """
+        Custom method which can't be auto-optimized.
+        """
+        return Sku.objects.filter(owners__organization=self)
 
 
 class Sku(models.Model):
