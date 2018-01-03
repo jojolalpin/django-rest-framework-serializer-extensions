@@ -14,10 +14,10 @@ from rest_framework_serializer_extensions import (
     fields as custom_fields, utils
 )
 
-
+NESTED_DELIMITER = '__'
 SOURCE_DELIMITER = '.'
 QUERYSET_DELIMITER = '__'
-EXPAND_DELIMITER = '__'
+# EXPAND_DELIMITER = '__'
 DEFAULT_MAX_EXPAND_DEPTH = 3
 
 
@@ -79,7 +79,7 @@ def _get_nested_field_names(hierarchy, root_field_names):
         if name == hierarchy:
             matching.add('*')
         elif hierarchy:
-            prefix = '{0}{1}'.format(hierarchy, EXPAND_DELIMITER)
+            prefix = '{0}{1}'.format(hierarchy, NESTED_DELIMITER)
 
             if name.startswith(prefix):
                 matching.add(name[len(prefix):])
@@ -459,10 +459,10 @@ class ExpandableFieldsMixin(object):
 
         # ID-only fields implicitly require full expansion of their parents
         for nested_field_name in expand_id_only:
-            if EXPAND_DELIMITER in nested_field_name:
+            if NESTED_DELIMITER in nested_field_name:
                 expand_full.add(
-                    EXPAND_DELIMITER.join(
-                        nested_field_name.split(EXPAND_DELIMITER)[:-1]
+                    NESTED_DELIMITER.join(
+                        nested_field_name.split(NESTED_DELIMITER)[:-1]
                     )
                 )
 
@@ -473,7 +473,7 @@ class ExpandableFieldsMixin(object):
 
         for nested_field_names in six.itervalues(root_instructions):
             for nested_field_name in nested_field_names:
-                depth = len(nested_field_name.split(EXPAND_DELIMITER))
+                depth = len(nested_field_name.split(NESTED_DELIMITER))
 
                 if depth > max_depth:
                     raise ValueError(
@@ -502,7 +502,7 @@ class ExpandableFieldsMixin(object):
 
         for method, root_nested_names in six.iteritems(root_instructions):
             instructions[method] = {
-                n.split(EXPAND_DELIMITER)[0]
+                n.split(NESTED_DELIMITER)[0]
                 for n in _get_nested_field_names(hierarchy, root_nested_names)
                 if n != '*'
             }
@@ -711,7 +711,7 @@ class OnlyFieldsMixin(object):
 
         # Flatten the nested names to return a list of field names at the
         # current hierarchy to whitelist
-        only_names = {n.split(EXPAND_DELIMITER)[0] for n in only_nested_names}
+        only_names = {n.split(NESTED_DELIMITER)[0] for n in only_nested_names}
 
         # Include all fields if either explicitly told to, or no fields were
         # matched (which can only occur if a parent had been whitelisted).
@@ -764,7 +764,7 @@ class ExcludeFieldsMixin(object):
 
         # Only exclude a field if it exactly matching the current hierarchy
         exclude_names = {
-            n for n in exclude_nested_names if EXPAND_DELIMITER not in n
+            n for n in exclude_nested_names if NESTED_DELIMITER not in n
         }
 
         unmatched_names = exclude_names.difference(set(fields))

@@ -1,7 +1,9 @@
 language: python
 
 python:
+    - "2.7"
     - "3.5"
+    - "3.6"
 
 sudo: false
 
@@ -42,13 +44,14 @@ matrix:
 install:
     # Virtualenv < 14 is required to keep the Python 3.2 builds running.
     - pip install tox "virtualenv<14"
+    - pip install tox-travis
 
 script:
-    - tox -e $TOX_ENV
-
+    #- tox -e $TOX_ENV
+    - tox
 after_success:
-    - pip install codecov
-    - codecov -e TOX_ENV
+    # pip install codecov
+    # codecov -e TOX_ENV
 
 notifications:
     email: false

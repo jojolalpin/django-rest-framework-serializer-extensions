@@ -5,4 +5,11 @@ Install using `pip`:
 $ pip install djangorestframework-serializer-extensions
 ```
 
-That's it.
+And add `rest_framework_serializer_extensions` to your `INSTALLED_APPS` setting:
+
+```py
+INSTALLED_APPS = (
+    ...
+    'rest_framework_serializer_extensions'
+)
+```
