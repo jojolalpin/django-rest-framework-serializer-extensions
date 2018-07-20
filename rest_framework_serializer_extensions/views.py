@@ -8,9 +8,6 @@ class SerializerExtensionsAPIViewMixin(object):
     """
     Mixin to provide support for Serializer Extensions within API views.
     """
-
-    extensions_query_params_enabled = True
-
     def get_queryset(self):
         """
         Automatically optimize the queryset depending on the expand context.
